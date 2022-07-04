@@ -11,6 +11,6 @@ app.get('/', (req: express.Request, res: express.Response) => {
     return res.send('Hello World');
 });
 
-console.log(process.env.NODE_ENV)
+console.log(`Current environment: ${process.env.NODE_ENV}`)
 
 app.listen(PORT, (): void => console.log(`Listening on port ${PORT}`));
