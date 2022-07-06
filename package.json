@@ -12,7 +12,13 @@
         "lint": "eslint --fix src/**/*.ts",
         "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write",
         "prettier-windows": "prettier --config .prettierrc src/**/*.ts --write",
-        "test": "NODE_ENV=test db-migrate up && npm run build && npx jasmine && NODE_ENV=test db-migrate down"
+        "pretest": "npm run migrate-up:test && npm run build",
+        "test": "NODE_ENV=test npx jasmine",
+        "posttest": "npm run migrate-down:test",
+        "migrate-up": "NODE_ENV=development db-migrate up",
+        "migrate-down": "NODE_ENV=development db-migrate down",
+        "migrate-up:test": "NODE_ENV=test db-migrate up",
+        "migrate-down:test": "NODE_ENV=test db-migrate down"
     },
     "keywords": [],
     "author": "",
