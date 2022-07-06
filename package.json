@@ -4,10 +4,10 @@
     "description": "",
     "main": "build/server.js",
     "scripts": {
-        "start": "node .",
+        "start": "NODE_ENV=development node .",
+        "prestart": "npm run build",
         "build": "npx tsc",
         "prebuild": "rm -r ./build",
-        "prestart": "npm run build",
         "dev": "NODE_ENV=development nodemon src/server.ts",
         "lint": "eslint --fix src/**/*.ts",
         "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write",
