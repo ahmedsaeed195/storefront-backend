@@ -6,13 +6,14 @@ dotenv.config()
 const {
     POSTGRES_HOST,
     POSTGRES_DB,
+    POSTGRES_DB_TEST,
     POSTGRES_USER,
     POSTGRES_PASSWORD,
 } = process.env
 
 const db = new Pool({
     host: POSTGRES_HOST,
-    database: POSTGRES_DB,
+    database: process.env.NODE_ENV === 'development' || undefined ? POSTGRES_DB : POSTGRES_DB_TEST,
     user: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
 })
