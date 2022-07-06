@@ -1,5 +1,7 @@
 import { Router } from "express";
 import ProductsController from '../controller/productsController'
+import ProductValidator from '../middleware/validation/product/productValidator'
+import productUpdateValidator from '../middleware/validation/product/productUpdateValidator'
 
 const productsController = new ProductsController()
 const productRouter = Router()
@@ -11,10 +13,10 @@ productRouter.get('/', productsController.index)
 productRouter.get('/:id', productsController.show)
 
 //* POST /product
-productRouter.post('/', productsController.store)
+productRouter.post('/', ProductValidator, productsController.store)
 
 //* PUT /product/:id
-productRouter.put('/:id', productsController.update)
+productRouter.put('/:id', productUpdateValidator, productsController.update)
 
 //* DELETE /product/:id
 productRouter.delete('/:id', productsController.delete)
