@@ -28,8 +28,9 @@ export class ProductStore {
     /**
      * Find a specific record by given id
      */
-    async findById(id: number): Promise<Product | undefined> {
+    async findById(id: number | string): Promise<Product | undefined> {
         const conn = await db.connect()
+        id = this.idParser(id)
         try {
             const sql = `SELECT * FROM products WHERE id = $1 LIMIT 1;`
             const result = await conn.query(sql, [id])
@@ -62,8 +63,9 @@ export class ProductStore {
     /**
      * update a record of specified id with given data
      * */
-    async update(id: number, data: Partial<Omit<Product, 'id'>>): Promise<Product> {
+    async update(id: number | string, data: Partial<Omit<Product, 'id'>>): Promise<Product> {
         const conn = await db.connect()
+        id = this.idParser(id)
         try {
             const sql = `UPDATE products SET ${this.queryParser(data, true)} WHERE id = $1 RETURNING *`
             const result = await conn.query(sql, [id])
@@ -79,8 +81,9 @@ export class ProductStore {
     /** 
      * delete a record by id
      */
-    async delete(id: number): Promise<void> {
+    async delete(id: number | string): Promise<void> {
         const conn = await db.connect()
+        id = this.idParser(id)
         try {
             const sql = 'DELETE FROM products WHERE id = $1'
             await conn.query(sql, [id])
@@ -110,5 +113,10 @@ export class ProductStore {
             return vals.join(' AND ')
         // if mode is truthy, then it is in the update mode
         return vals.join(', ')
+    }
+
+    // ensures that the id is always a number
+    private idParser(id: number | string): number {
+        return (id as unknown) as number
     }
 } 
