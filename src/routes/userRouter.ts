@@ -1,7 +1,7 @@
 import { Router } from "express";
 import UserController from '../controller/userController'
-// import UserValidator from '../middleware/validation/user/userValidator'
-// import userUpdateValidator from '../middleware/validation/user/userUpdateValidator'
+import UserValidator from '../middleware/validation/user/userValidator'
+import userUpdateValidator from '../middleware/validation/user/userUpdateValidator'
 
 const userController = new UserController()
 const userRouter = Router()
@@ -13,10 +13,10 @@ userRouter.get('/', userController.index)
 userRouter.get('/:id', userController.show)
 
 //* POST /user
-userRouter.post('/', userController.store)
+userRouter.post('/', UserValidator, userController.store)
 
 //* PUT /user/:id
-userRouter.put('/:id', userController.update)
+userRouter.put('/:id', userUpdateValidator, userController.update)
 
 //* DELETE /user/:id
 userRouter.delete('/:id', userController.delete)
