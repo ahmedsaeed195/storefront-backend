@@ -4,7 +4,7 @@ import Joi from 'joi';
 const schema = Joi.object({
     name: Joi.string().required(),
     price: Joi.number().required(),
-    category: Joi.string().required()
+    category: Joi.string().default(null)
 }).options({ stripUnknown: true })
 
 const validate = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
