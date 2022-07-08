@@ -20,7 +20,7 @@ describe("Product Model", () => {
         const result = await store.findById(1)
         expect(result).toBeUndefined()
     })
-    it("create method should return a new created record with the given data", async () => {
+    it("create method should return a newly created product with the given data", async () => {
         const data: Omit<Product, 'id'> = {
             name: 'test',
             price: 5,
@@ -37,7 +37,7 @@ describe("Product Model", () => {
         const result = await store.all()
         expect(result.length).toBeGreaterThan(0)
     })
-    it("findById method should return a record", async () => {
+    it("findById method should return a product", async () => {
         const result = await store.findById(1)
         expect(result).toEqual({
             id: 1,
@@ -46,7 +46,7 @@ describe("Product Model", () => {
             category: 'testing'
         })
     })
-    it("update method should update a record and return the modified record", async () => {
+    it("update method should update a product and return the modified product", async () => {
         const data: Omit<Product, 'id'> = {
             name: 'test1',
             price: 3,
@@ -60,7 +60,7 @@ describe("Product Model", () => {
             category: 'tests'
         })
     })
-    it("delete method should delete a record by given id", async () => {
+    it("delete method should delete a product by given id", async () => {
         const result = await store.delete(1)
         expect(result).toBeUndefined()
     })
