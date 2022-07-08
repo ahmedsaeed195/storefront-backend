@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { User, UserStore } from "../model/User";
+import bcrypt from 'bcrypt'
 
 const User = new UserStore()
 
@@ -33,8 +34,30 @@ class UsersController {
         }
     }
 
+    async login(req: Request, res: Response): Promise<Response> {
+        try {
+            const user = await User.findByUsername(req.body.username)
+            if (user) {
+                const compare = await bcrypt.compare(req.body.password + process.env.BCRYPT_PEPPER, user.password_digest)
+                if (compare) {
+                    return res.status(200).json(user)
+                }
+            }
+            return res.status(401).json({
+                message: "username or password wasn't correct, please check your information then try again!"
+            })
+        } catch (err) {
+            return res.status(500).json({
+                message: `Internal Server Error`,
+                error: err
+            })
+        }
+    }
+
     async store(req: Request, res: Response): Promise<Response> {
         try {
+            const hash = await bcrypt.hash(req.body.password_digest + process.env.BCRYPT_PEPPER, parseInt(process.env.SALT_ROUNDS || '10'))
+            req.body.password_digest = hash
             const user = await User.create(req.body)
             return res.status(201).json({
                 message: "User Created Successfully",
@@ -50,6 +73,8 @@ class UsersController {
 
     async update(req: Request, res: Response): Promise<Response> {
         try {
+            const hash = bcrypt.hashSync(req.body.password_digest + process.env.BCRYPT_PEPPER, parseInt(process.env.SALT_ROUNDS || '10'))
+            req.body.password_digest = hash
             const user = await User.findById(req.params.id)
             if (!user) {
                 return res.status(404).json({

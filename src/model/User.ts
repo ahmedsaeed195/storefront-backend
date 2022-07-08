@@ -46,6 +46,23 @@ export class UserStore {
     }
 
     /**
+ * Find a specific record by given id
+ */
+    async findByUsername(username: string): Promise<User | undefined> {
+        const conn = await db.connect()
+        try {
+            const sql = `SELECT * FROM users WHERE username = $1 LIMIT 1;`
+            const result = await conn.query(sql, [username])
+            return result.rows[0] ? result.rows[0] : undefined
+        }
+        catch (err) {
+            throw new Error(`Coudln't find product identfied by ${username}: ${err} `)
+        } finally {
+            conn.release()
+        }
+    }
+
+    /**
      * Create a new record with given data
      */
     async create(data: Omit<User, 'id'>): Promise<User> {
