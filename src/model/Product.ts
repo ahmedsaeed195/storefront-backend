@@ -1,4 +1,5 @@
 import db from "../config/database";
+import { idParser, queryParser } from '../utils'
 
 export type Product = {
     id: number,
@@ -14,7 +15,7 @@ export class ProductStore {
     async all(query?: Partial<Product>): Promise<Product[]> {
         const conn = await db.connect()
         try {
-            const sql = `SELECT * FROM products${query ? ' WHERE ' + this.queryParser(query) : ''};`
+            const sql = `SELECT * FROM products${query ? ' WHERE ' + queryParser<Partial<Product>>(query) : ''};`
             const result = await conn.query(sql)
             return result.rows
         }
@@ -30,7 +31,7 @@ export class ProductStore {
      */
     async findById(id: number | string): Promise<Product | undefined> {
         const conn = await db.connect()
-        id = this.idParser(id)
+        id = idParser(id)
         try {
             const sql = `SELECT * FROM products WHERE id = $1 LIMIT 1;`
             const result = await conn.query(sql, [id])
@@ -65,9 +66,9 @@ export class ProductStore {
      * */
     async update(id: number | string, data: Partial<Omit<Product, 'id'>>): Promise<Product> {
         const conn = await db.connect()
-        id = this.idParser(id)
+        id = idParser(id)
         try {
-            const sql = `UPDATE products SET ${this.queryParser(data, true)} WHERE id = $1 RETURNING *`
+            const sql = `UPDATE products SET ${queryParser<Partial<Product>>(data, true)} WHERE id = $1 RETURNING *`
             const result = await conn.query(sql, [id])
             return result.rows[0]
         }
@@ -83,7 +84,7 @@ export class ProductStore {
      */
     async delete(id: number | string): Promise<void> {
         const conn = await db.connect()
-        id = this.idParser(id)
+        id = idParser(id)
         try {
             const sql = 'DELETE FROM products WHERE id = $1'
             await conn.query(sql, [id])
@@ -92,31 +93,5 @@ export class ProductStore {
         } finally {
             conn.release()
         }
-    }
-
-    // transforms given data into 
-    private queryParser(query: Partial<Product>, mode?: boolean) {
-        if (Object.keys(query).length === 0) {
-            return null
-        }
-        let vals: string[] = []
-        Object.entries(query).forEach((entry, i) => {
-            const [key, value] = entry
-            if (value !== undefined)
-                if (typeof value === 'string')
-                    vals.push(`${key} = '${value}'`)
-                else
-                    vals.push(`${key} = ${value}`)
-        })
-        // if mode is falsy, then it is in the default search mode
-        if (!mode)
-            return vals.join(' AND ')
-        // if mode is truthy, then it is in the update mode
-        return vals.join(', ')
-    }
-
-    // ensures that the id is always a number
-    private idParser(id: number | string): number {
-        return (id as unknown) as number
     }
 } 
