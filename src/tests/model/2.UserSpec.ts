@@ -3,13 +3,13 @@ import { User, UserStore } from "../../model/User";
 const store = new UserStore()
 
 describe("User Model", () => {
+    let userId: number
     it("all method should have an empty list of users", async () => {
         const result = await store.all()
         expect(result).toEqual([])
     })
     it("all method should have an empty list of users that matches given query", async () => {
         const query: Partial<User> = {
-            id: 1,
             username: "test",
             first_name: 'ahmed'
         }
@@ -34,20 +34,20 @@ describe("User Model", () => {
             last_name: 'saeed',
             password_digest: ''
         }))
+        userId = result.id
     })
     it("all method should have a list of users", async () => {
         const result = await store.all()
         expect(result.length).toBeGreaterThan(0)
     })
     it("findById method should return a user", async () => {
-        const result = await store.findById(1)
-        expect(result).toEqual({
-            id: 1,
+        const result = await store.findById(userId)
+        expect(result).toEqual(jasmine.objectContaining({
             username: 'test',
             first_name: 'ahmed',
             last_name: 'saeed',
             password_digest: ''
-        })
+        }))
     })
     it("update method should update a user and return the modified record", async () => {
         const data: Omit<User, 'id'> = {
@@ -56,17 +56,16 @@ describe("User Model", () => {
             last_name: 'saeed',
             password_digest: ''
         }
-        const result = await store.update(1, data)
-        expect(result).toEqual({
-            id: 1,
+        const result = await store.update(userId, data)
+        expect(result).toEqual(jasmine.objectContaining({
             username: 'test1',
             first_name: 'ahmed',
             last_name: 'saeed',
             password_digest: ''
-        })
+        }))
     })
     it("delete method should delete a user by given id", async () => {
-        const result = await store.delete(1)
+        const result = await store.delete(userId)
         expect(result).toBeUndefined()
     })
     it("all method should have an empty list of users", async () => {
