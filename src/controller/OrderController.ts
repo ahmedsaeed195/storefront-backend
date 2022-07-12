@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { Order, OrderStore } from "../model/Order";
+import { User, UserStore } from "../model/User";
 
+const User = new UserStore()
 const Order = new OrderStore()
 
 class OrdersController {
@@ -35,6 +37,12 @@ class OrdersController {
 
     async store(req: Request, res: Response): Promise<Response> {
         try {
+            const user = await User.findById(req.body.user_id)
+            if (!user) {
+                return res.status(404).json({
+                    message: 'User Not Found'
+                })
+            }
             const order = await Order.create(req.body)
             return res.status(201).json({
                 message: "Order Created Successfully",
@@ -55,6 +63,14 @@ class OrdersController {
                 return res.status(404).json({
                     message: 'Order Not Found'
                 })
+            }
+            if (req.body.user_id) {
+                const user = await User.findById(req.body.user_id)
+                if (!user) {
+                    return res.status(404).json({
+                        message: 'User Not Found'
+                    })
+                }
             }
             const updatedOrder = await Order.update(req.params.id, req.body)
             return res.status(200).json({
