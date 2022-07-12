@@ -1,6 +1,6 @@
 import { Router } from "express";
 import UserController from '../controller/UserController'
-import UserValidator from '../middleware/validation/user/userValidator'
+import userValidator from '../middleware/validation/user/userValidator'
 import userUpdateValidator from '../middleware/validation/user/userUpdateValidator'
 import loginValidator from '../middleware/validation/user/loginValidator'
 
@@ -17,7 +17,7 @@ userRouter.get('/:id', userController.show)
 userRouter.post('/login', loginValidator, userController.login)
 
 //* POST /user
-userRouter.post('/', UserValidator, userController.store)
+userRouter.post('/', userValidator, userController.store)
 
 //* PUT /user/:id
 userRouter.put('/:id', userUpdateValidator, userController.update)

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import ProductController from '../controller/ProductController'
-import ProductValidator from '../middleware/validation/product/productValidator'
+import productValidator from '../middleware/validation/product/productValidator'
 import productUpdateValidator from '../middleware/validation/product/productUpdateValidator'
 
 const productController = new ProductController()
@@ -13,7 +13,7 @@ productRouter.get('/', productController.index)
 productRouter.get('/:id', productController.show)
 
 //* POST /product
-productRouter.post('/', ProductValidator, productController.store)
+productRouter.post('/', productValidator, productController.store)
 
 //* PUT /product/:id
 productRouter.put('/:id', productUpdateValidator, productController.update)
