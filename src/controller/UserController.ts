@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { User, UserStore } from "../model/User";
+
 import bcrypt from 'bcrypt'
 
 const User = new UserStore()
@@ -56,6 +57,12 @@ class UsersController {
 
     async store(req: Request, res: Response): Promise<Response> {
         try {
+            const findUser = await User.findByUsername(req.body.username)
+            if (findUser) {
+                return res.status(400).json({
+                    message: "username already exists"
+                })
+            }
             const hash = await bcrypt.hash(req.body.password_digest + process.env.BCRYPT_PEPPER, parseInt(process.env.SALT_ROUNDS || '10'))
             req.body.password_digest = hash
             const user = await User.create(req.body)
