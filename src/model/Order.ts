@@ -43,12 +43,13 @@ export class OrderStore {
     /**
      * Find a specific record by given id
      */
-    async findById(id: number | string): Promise<Order | undefined> {
+    async findById(user_id: number | undefined, id: number | string): Promise<Order | undefined> {
         const conn = await db.connect()
+        user_id = idParser(user_id || '')
         id = idParser(id)
         try {
-            const sql = `SELECT * FROM orders LEFT JOIN orders_info_view ON orders.id = orders_info_view.order_id WHERE orders.id = $1;`
-            const result = await conn.query(sql, [id])
+            const sql = `SELECT * FROM orders LEFT JOIN orders_info_view ON orders.id = orders_info_view.order_id WHERE user_id = $1 AND orders.id = $2;`
+            const result = await conn.query(sql, [user_id, id])
             return result.rows[0] ? this.orderFormater(result.rows)[0] : undefined
         }
         catch (err) {

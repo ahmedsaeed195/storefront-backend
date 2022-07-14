@@ -8,14 +8,14 @@ let product = Joi.object().keys({
 
 
 const schema = Joi.object({
-    user_id: Joi.number().integer().required(),
-    status: Joi.boolean().default(false),
     products: Joi.array().items(product).min(1).required()
 }).options({ stripUnknown: true })
 
 const validate = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
     try {
         const value = await schema.validateAsync(req.body)
+        value.user_id = req.user?.id
+        value.status = false
         req.body = value
         next();
     } catch (err) {

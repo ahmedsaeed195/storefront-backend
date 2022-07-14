@@ -2,6 +2,7 @@ import { Router } from "express";
 import ProductController from '../controller/ProductController'
 import productValidator from '../middleware/validation/product/productValidator'
 import productUpdateValidator from '../middleware/validation/product/productUpdateValidator'
+import auth from "../middleware/authentication/auth";
 
 const productController = new ProductController()
 const productRouter = Router()
@@ -13,12 +14,12 @@ productRouter.get('/', productController.index)
 productRouter.get('/:id', productController.show)
 
 //* POST /product
-productRouter.post('/', productValidator, productController.store)
+productRouter.post('/', auth, productValidator, productController.store)
 
 //* PUT /product/:id
-productRouter.put('/:id', productUpdateValidator, productController.update)
+productRouter.put('/:id', auth, productUpdateValidator, productController.update)
 
 //* DELETE /product/:id
-productRouter.delete('/:id', productController.delete)
+productRouter.delete('/:id', auth, productController.delete)
 
 export default productRouter

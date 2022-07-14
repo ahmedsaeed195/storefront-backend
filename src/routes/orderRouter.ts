@@ -2,26 +2,27 @@ import { Router } from "express";
 import OrderController from '../controller/OrderController'
 import orderValidator from '../middleware/validation/order/orderValidator'
 import orderUpdateValidator from '../middleware/validation/order/orderUpdateValidator'
+import auth from "../middleware/authentication/auth";
 
 const orderController = new OrderController()
 const orderRouter = Router()
 
 //* GET /order
-orderRouter.get('/', orderController.index)
+orderRouter.get('/', auth, orderController.index)
 
 //* GET /order/complete
-orderRouter.get('/complete', orderController.indexComplete)
+orderRouter.get('/complete', auth, orderController.indexComplete)
 
 //* GET /order/:id
-orderRouter.get('/:id', orderController.show)
+orderRouter.get('/:id', auth, orderController.show)
 
 //* POST /order
-orderRouter.post('/', orderValidator, orderController.store)
+orderRouter.post('/', auth, orderValidator, orderController.store)
 
 //* PUT /order/:id
-orderRouter.put('/:id', orderUpdateValidator, orderController.update)
+orderRouter.put('/:id', auth, orderUpdateValidator, orderController.update)
 
 //* DELETE /order/:id
-orderRouter.delete('/:id', orderController.delete)
+orderRouter.delete('/:id', auth, orderController.delete)
 
 export default orderRouter

@@ -3,15 +3,16 @@ import UserController from '../controller/UserController'
 import userValidator from '../middleware/validation/user/userValidator'
 import userUpdateValidator from '../middleware/validation/user/userUpdateValidator'
 import loginValidator from '../middleware/validation/user/loginValidator'
+import auth from "../middleware/authentication/auth";
 
 const userController = new UserController()
 const userRouter = Router()
 
 //* GET /user
-userRouter.get('/', userController.index)
+userRouter.get('/', auth, userController.index)
 
 //* GET /user/:id
-userRouter.get('/:id', userController.show)
+userRouter.get('/:id', auth, userController.show)
 
 //* POST /user/login
 userRouter.post('/login', loginValidator, userController.login)
@@ -20,9 +21,9 @@ userRouter.post('/login', loginValidator, userController.login)
 userRouter.post('/', userValidator, userController.store)
 
 //* PUT /user/:id
-userRouter.put('/:id', userUpdateValidator, userController.update)
+userRouter.put('/me', auth, userUpdateValidator, userController.update)
 
 //* DELETE /user/:id
-userRouter.delete('/:id', userController.delete)
+userRouter.delete('/me', auth, userController.delete)
 
 export default userRouter

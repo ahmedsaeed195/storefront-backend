@@ -10,7 +10,8 @@ const Product = new ProductStore()
 class OrdersController {
     async index(req: Request, res: Response): Promise<Response> {
         try {
-            const orders = await Order.all()
+            const query: Partial<Order> | undefined = { user_id: req.user?.id }
+            const orders = await Order.all(query)
             return res.status(200).json(orders)
         } catch (err) {
             return res.status(500).json({
@@ -22,7 +23,7 @@ class OrdersController {
 
     async indexComplete(req: Request, res: Response): Promise<Response> {
         try {
-            const orders = await Order.all({ status: true })
+            const orders = await Order.all({ user_id: req.user?.id, status: true })
             return res.status(200).json(orders)
         } catch (err) {
             return res.status(500).json({
@@ -34,7 +35,7 @@ class OrdersController {
 
     async show(req: Request, res: Response): Promise<Response> {
         try {
-            const order = await Order.findById(req.params.id)
+            const order = await Order.findById(req.user?.id, req.params.id)
             if (order) {
                 return res.status(200).json(order)
             }
@@ -51,7 +52,7 @@ class OrdersController {
 
     async store(req: Request, res: Response): Promise<Response> {
         try {
-            const user = await User.findById(req.body.user_id)
+            const user = await User.findById(req.user?.id || req.body.user_id)
             if (!user) {
                 return res.status(404).json({
                     message: 'User Not Found'
@@ -85,7 +86,7 @@ class OrdersController {
 
     async update(req: Request, res: Response): Promise<Response> {
         try {
-            const order = await Order.findById(req.params.id)
+            const order = await Order.findById(req.user?.id, req.params.id)
             if (!order) {
                 return res.status(404).json({
                     message: 'Order Not Found'
@@ -124,7 +125,7 @@ class OrdersController {
 
     async delete(req: Request, res: Response): Promise<Response> {
         try {
-            const order = await Order.findById(req.params.id)
+            const order = await Order.findById(req.user?.id, req.params.id)
             if (!order) {
                 return res.status(404).json({
                     message: 'Order Not Found'
