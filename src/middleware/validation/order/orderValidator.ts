@@ -1,9 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from 'joi';
 
+let product = Joi.object().keys({
+    id: Joi.number().required(),
+    quantity: Joi.number().required(),
+})
+
+
 const schema = Joi.object({
     user_id: Joi.number().integer().required(),
-    status: Joi.boolean().default(false)
+    status: Joi.boolean().default(false),
+    products: Joi.array().items(product).min(1).required()
 }).options({ stripUnknown: true })
 
 const validate = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {

@@ -9,6 +9,9 @@ const orderRouter = Router()
 //* GET /order
 orderRouter.get('/', orderController.index)
 
+//* GET /order/complete
+orderRouter.get('/complete', orderController.indexComplete)
+
 //* GET /order/:id
 orderRouter.get('/:id', orderController.show)
 
