@@ -16,8 +16,12 @@ class UsersController {
             if (query?.password_digest) {
                 delete query['password_digest']
             }
-            const users = await User.all(query)
-            return res.status(200).json(users)
+            const users: Partial<User>[] = await User.all(query)
+            const result = users.map(user => {
+                delete user['password_digest']
+                return user
+            })
+            return res.status(200).json(result)
         } catch (err) {
             return res.status(500).json({
                 message: `Internal Server Error`,
@@ -28,8 +32,9 @@ class UsersController {
 
     async show(req: Request, res: Response): Promise<Response> {
         try {
-            const user = await User.findById(req.params.id)
+            const user: Partial<User> | undefined = await User.findById(req.params.id)
             if (user) {
+                delete user['password_digest']
                 return res.status(200).json(user)
             }
             return res.status(404).json({
@@ -74,7 +79,8 @@ class UsersController {
             }
             const hash = await bcrypt.hash(req.body.password_digest + process.env.BCRYPT_PEPPER, parseInt(process.env.SALT_ROUNDS || '10'))
             req.body.password_digest = hash
-            const user = await User.create(req.body)
+            const user: Partial<User> = await User.create(req.body)
+            delete user['password_digest']
             const token = jwt.sign({ user }, process.env.JWT_SECRET || '')
             return res.status(201).json({
                 message: "User Created Successfully",
@@ -99,7 +105,8 @@ class UsersController {
             }
             const hash = bcrypt.hashSync(req.body.password_digest + process.env.BCRYPT_PEPPER, parseInt(process.env.SALT_ROUNDS || '10'))
             req.body.password_digest = hash
-            const updatedUser = await User.update(req.user?.id || '', req.body)
+            const updatedUser: Partial<User> = await User.update(req.user?.id || '', req.body)
+            delete updatedUser['password_digest']
             return res.status(200).json({
                 message: 'User Updated Successfully',
                 user: updatedUser
