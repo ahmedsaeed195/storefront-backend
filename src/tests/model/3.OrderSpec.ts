@@ -44,7 +44,7 @@ describe("Order Model", () => {
         expect(result).toEqual([])
     })
     it("findById method should return undefined", async () => {
-        const result = await store.findById(1)
+        const result = await store.findById(userId, 1)
         expect(result).toBeUndefined()
     })
     it("create method should return a newly created order with the given data", async () => {
@@ -75,7 +75,7 @@ describe("Order Model", () => {
         expect(result.length).toBeGreaterThan(0)
     })
     it("findById method should return a order", async () => {
-        const result = await store.findById(1)
+        const result = await store.findById(userId, 1)
         expect(result).toEqual(jasmine.objectContaining({
             user_id: userId,
             status: false,

@@ -10,6 +10,18 @@ describe('/api/order endpoints', () => {
     let orderId: number
     let productId: number
     let userId: number
+    let token: string
+    beforeAll((done) => {
+        (async () => {
+            const data: Partial<User> & { password: string } = {
+                username: 'orderTester',
+                password: 'testingpassword'
+            }
+            const res = await request.post(`/api/user`).send(data)
+            userId = res.body.user.id
+            token = res.body.token
+        })().then(done).catch(done.fail)
+    })
     beforeAll((done) => {
         (async () => {
             const data: Omit<Product, 'id'> = {
@@ -17,28 +29,21 @@ describe('/api/order endpoints', () => {
                 price: 5,
                 category: 'testing'
             }
-            const res = await request.post(`/api/product`).send(data)
+            const res = await request.post(`/api/product`).set('x-auth-token', token).send(data)
             productId = res.body.product.id
         })().then(done).catch(done.fail);
     })
-    beforeAll((done) => {
-        (async () => {
-            const data: Partial<User> & { password: string } = {
-                username: 'tester',
-                password: 'testingpassword'
-            }
-            const res = await request.post(`/api/user`).send(data)
-            userId = res.body.user.id
-        })().then(done).catch(done.fail)
-    })
-    afterAll(() => {
+    afterAll((done) => {
+        request.delete(`/api/product/${productId}`).set('x-auth-token', token)
+        request.delete(`/api/user/${userId}`).set('x-auth-token', token)
         server.close()
+        done()
     });
     it('GET /order', (done) => {
-        request.get('/api/order').expect(200).end((error: Error) => (error ? done.fail(error) : done()))
+        request.get('/api/order').set('x-auth-token', token).expect(200).end((error: Error) => (error ? done.fail(error) : done()))
     })
     it('GET /order/:id', (done) => {
-        request.get('/api/order/1').expect(404).end((error: Error) => (error ? done.fail(error) : done()))
+        request.get('/api/order/1').set('x-auth-token', token).expect(404).end((error: Error) => (error ? done.fail(error) : done()))
     })
     it('POST /order', (done) => {
         (async () => {
@@ -52,9 +57,8 @@ describe('/api/order endpoints', () => {
                     }
                 ]
             }
-            const res = await request.post(`/api/order`).send(data)
+            const res = await request.post(`/api/order`).set('x-auth-token', token).send(data)
             expect(res.status).toBe(201)
-            console.log(res.body.order)
             orderId = res.body.order.id
         })().then(done).catch(done.fail)
     })
@@ -69,9 +73,9 @@ describe('/api/order endpoints', () => {
                 }
             ]
         }
-        request.put(`/api/order/${orderId}`).send(data).expect(200).end((error: Error) => (error ? done.fail(error) : done()))
+        request.put(`/api/order/${orderId}`).set('x-auth-token', token).send(data).expect(200).end((error: Error) => (error ? done.fail(error) : done()))
     })
     it('DELETE /order/:id', (done) => {
-        request.delete(`/api/order/${orderId}`).expect(200).end((error: Error) => (error ? done.fail(error) : done()))
+        request.delete(`/api/order/${orderId}`).set('x-auth-token', token).expect(200).end((error: Error) => (error ? done.fail(error) : done()))
     })
 })
