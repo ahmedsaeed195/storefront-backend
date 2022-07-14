@@ -6,24 +6,34 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 ## API Endpoints
 
+All endpoints start with `/api` followed by the desired route name.
+All endpoints that require tokens must have the token sent in the request header "x-auth-token".
+
 #### Products
 
--   Index
--   Show
--   Create [token required]
--   [OPTIONAL] Top 5 most popular products
--   [OPTIONAL] Products by category (args: product category)
+-   **Index** : GET `/product` (optional query for name, price and category)
+-   **Show** : GET `/product/:id`
+-   **Create** : POST `/product` [token required]
+-   **Update** : PUT `/product/:id` [token required]
+-   **Delete** : DELETE `/product/:id` [token required]
 
 #### Users
 
--   Index [token required]
--   Show [token required]
--   Create N[token required]
+-   **Index** : GET `/user` [token required] (optional query for username, first_name, last_name)
+-   **Show** : GET `/user/:id` [token required]
+-   **Create** : POST `/user`
+-   **Login** : POST `/user/login` (returns token in the reponse body)
+-   **Update** : PUT `/user/me` [token required]
+-   **Delete** : DELETE `/user/me` [token required]
 
 #### Orders
 
--   Current Order by user (args: user id)[token required]
--   [OPTIONAL] Completed Orders by user (args: user id)[token required]
+-   **Index** : GET `/order` [token required]
+-   **IndexComplete** : GET `/order/complete` [token required]
+-   **Show** : GET `/order/:id` [token required]
+-   **Create** : POST `/order` [token required]
+-   **Update** : PUT `/order/:id` [token required]
+-   **Delete** : DELETE `/order/:id` [token required]
 
 ## Data Shapes
 
@@ -32,7 +42,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 -   id
 -   name
 -   price
--   [OPTIONAL] category
+-   category
 
 #### User
 
@@ -50,4 +60,5 @@ These are the notes from a meeting with the frontend developer that describe wha
 -   status of order (active or complete)
 
 ## Database Schema
+
 ![Database Schema](./database_schema.png)
