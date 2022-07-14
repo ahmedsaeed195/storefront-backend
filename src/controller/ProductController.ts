@@ -6,7 +6,7 @@ const Product = new ProductStore()
 class ProductsController {
     async index(req: Request, res: Response): Promise<Response> {
         try {
-            let query: Partial<Product> | undefined = undefined
+            let query: Partial<Omit<Product, 'id'>> | undefined = undefined
             if (Object.keys(req.query).length > 0) {
                 query = req.query
             }
