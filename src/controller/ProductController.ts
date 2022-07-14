@@ -6,7 +6,11 @@ const Product = new ProductStore()
 class ProductsController {
     async index(req: Request, res: Response): Promise<Response> {
         try {
-            const products = await Product.all()
+            let query: Partial<Product> | undefined = undefined
+            if (Object.keys(req.query).length > 0) {
+                query = req.query
+            }
+            const products = await Product.all(query)
             return res.status(200).json(products)
         } catch (err) {
             return res.status(500).json({

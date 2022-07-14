@@ -8,7 +8,11 @@ const User = new UserStore()
 class UsersController {
     async index(req: Request, res: Response): Promise<Response> {
         try {
-            const users = await User.all()
+            let query: Partial<User> | undefined = undefined
+            if (Object.keys(req.query).length > 0) {
+                query = req.query
+            }
+            const users = await User.all(query)
             return res.status(200).json(users)
         } catch (err) {
             return res.status(500).json({
