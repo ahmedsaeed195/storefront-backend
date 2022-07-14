@@ -4,4 +4,4 @@ CREATE TABLE orders (
     status BOOLEAN NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-CREATE UNIQUE INDEX user_id ON orders(user_id);
+CREATE INDEX user_id ON orders(user_id);
