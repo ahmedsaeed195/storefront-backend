@@ -17,4 +17,6 @@ app.use('/api', router)
 
 console.log(`Current environment: ${process.env.NODE_ENV}`)
 
-app.listen(PORT, (): void => console.log(`Listening on port ${PORT}`));
+const server = app.listen(PORT, (): void => console.log(`Listening on port ${PORT}`));
+
+export default server
