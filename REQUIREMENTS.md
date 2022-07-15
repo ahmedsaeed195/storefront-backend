@@ -39,25 +39,31 @@ All endpoints that require tokens must have the token sent in the request header
 
 #### Product
 
--   id
--   name
--   price
--   category
+-   id [INTEGER, SERIAL, PK]
+-   name [VARCHAR(100), NOT NULL]
+-   price [FLOAT, NOT NULL]
+-   category [VARCHAR(50)]
 
 #### User
 
--   id
--   firstName
--   lastName
--   password
+-   id [INTEGER, SERIAL, PK]
+-   username [VARCHAR(50), NOT NULL, UNIQUE INDEX]
+-   firstName [VARCHAR(50)]
+-   lastName [VARCHAR(50)]
+-   password_digest [VARCHAR(60), NOT NULL]
 
 #### Orders
 
--   id
--   id of each product in the order
--   quantity of each product in the order
--   user_id
--   status of order (active or complete)
+-   id [INTEGER, SERIAL, PK]
+-   user_id [INTEGER, INDEX, FK(users.id)]
+-   status [Boolean (false = active, true = complete), NOT NULL]
+
+#### Orders_info
+
+-   id [INTEGER, SERIAL, PK]
+-   order_id [INTEGER, NOT NULL, INDEX, FK(orders.id)]
+-   product_id [INTEGER, NOT NULL, INDEX, FK(products.id)]
+-   product quantity [INTEGER, NOT NULL]
 
 ## Database Schema
 
