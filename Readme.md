@@ -54,8 +54,8 @@ npm install
 ```
 
 once all of the dependencies are installed, you will need to create a `.env` file that includes all of the keys that are present in the `.env.example` file, and make sure to give them all values that are appropriate for them. <br/><br/>
-**Hint** : in `.env.example` file, each key has a value that indicates the type/shape of the actual value that should be passed in it.
-
+**Hint 1** : in `.env.example` file, each key has a value that indicates the type/shape of the actual value that should be passed in it.<br/>
+**Hint 2** : make sure to fill all of the .env file keys or else the application won't run, and make sure to write the right Postgresql Port, by default it should be 5432 unless you have changed it.
 ### 3. Running migrations
 
 Once you are done with the `.env` file, simply run the following command to run the migrations and create the tables needed :
