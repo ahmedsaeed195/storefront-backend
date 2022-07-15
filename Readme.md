@@ -58,7 +58,7 @@ once all of the dependencies are installed, you will need to create a `.env` fil
 
 ### 3. Running migrations
 
-Once you are done with the `.env` file, simply run the following command :
+Once you are done with the `.env` file, simply run the following command to run the migrations and create the tables needed :
 
 ```
 npm run migrate-up
